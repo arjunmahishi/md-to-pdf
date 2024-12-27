@@ -9,10 +9,12 @@
   <script type="module" src="/src/main.js"></script>
 </head>
 
-<body>
-  <div class="flex flex-row">
-    <div id="editor" class="basis-1/2"></div>
-    <div id="preview" class="basis-1/2 prose"></div>
+<body class="min-h-screen">
+
+  <div class="container mx-auto h-full p-4 flex flex-col md:flex-row">
+    <div id="editor" class="flex-1 p-4 rounded-md h-full overflow-auto border-r-4"></div>
+    <div id="preview" class="flex-1 p-4 rounded-md h-full overflow-auto ml-0 md:ml-4 prose border-r-4"></div>
   </div>
+
 </body>
 </html>
