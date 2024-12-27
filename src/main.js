@@ -2,6 +2,7 @@ import { EditorView, basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { marked } from "marked";
+import html2pdf from 'html2pdf.js';
 import './style.css';
 
 const updateDebounceRate = 300; // milliseconds
@@ -17,7 +18,7 @@ const debounce = (fn, delay) => {
 const updatePreview = debounce(() => {
   const markdown = editor.state.doc.toString();
   const html = marked(markdown);
-  document.getElementById("preview").innerHTML = html;
+  document.querySelector("#preview").innerHTML = html;
 }, updateDebounceRate);
 
 const editor = new EditorView({
@@ -29,6 +30,17 @@ const editor = new EditorView({
       EditorView.updateListener.of(updatePreview),
     ],
   }),
-  parent: document.getElementById("editor")
+  parent: document.querySelector("#editor")
 });
 
+document.querySelector("#save-pdf").addEventListener("click", () => {
+  html2pdf().from(document.querySelector('#preview')).toPdf().get('pdf').then(pdf => {
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url);
+  });
+});
+
+document.getElementById('font').addEventListener('change', (e) => {
+  document.querySelector('#preview').style = `font-family: ${e.target.value}`;
+});
