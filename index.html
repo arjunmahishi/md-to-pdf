@@ -18,6 +18,10 @@
         <option value="Georgia">Georgia</option>
         <option value="Courier New">Courier New</option>
       </select>
+
+      <button id="page-break" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4" hidden>
+        Insert page break
+      </button>
     </div>
 
     <div class="flex flex-row-reverse flex-grow">
@@ -27,10 +31,11 @@
     </div>
   </div>
 
-  <!-- <div class="container mx-auto h-full p-4 flex flex-col md:flex-row"> -->
-  <div class="container mx-auto p-4 flex flex-col md:flex-row grow">
+  <div id="main-container" class="container mx-auto p-4 flex flex-col md:flex-row grow">
     <div id="editor" class="w-1/2 overflow-auto border-r-4"></div>
-    <div id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose"></div>
+
+    <!--If the classes of this div chaange, make sure to change it in the PDF generating function too-->
+    <div id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>
   </div>
 
 </body>

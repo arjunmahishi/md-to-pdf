@@ -2,8 +2,15 @@ import { EditorView, basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { marked } from "marked";
+import { renderers } from "./marked-renderers";
 import html2pdf from 'html2pdf.js';
 import './style.css';
+
+marked.use({
+  gfm: true,
+  breaks: true,
+  renderer: renderers,
+})
 
 const updateDebounceRate = 300; // milliseconds
 
@@ -34,10 +41,24 @@ const editor = new EditorView({
 });
 
 document.querySelector("#save-pdf").addEventListener("click", () => {
-  let target = document.querySelector("#preview").cloneNode(true);
-  // target.classList.remove('w-1/2');
+  const body = document.querySelector("body").cloneNode(true);
+  const container = document.querySelector("#main-container").cloneNode(true);
+  const preview = document.querySelector("#preview").cloneNode(true);
 
-  html2pdf().from(target).toPdf().get('pdf').then(pdf => {
+  // remove all the children of body and container
+  // add the container to the body
+  // add the preview to the container
+  body.innerHTML = "";
+  container.innerHTML = "";
+  body.appendChild(container);
+  container.appendChild(preview);
+
+  // the preview needs to be full width or only the left half of the page will be occupied
+  // in the pdf
+  preview.classList.remove("w-1/2");
+
+
+  html2pdf().from(body).toPdf().get('pdf').then(pdf => {
     const blob = pdf.output('blob');
     const url = URL.createObjectURL(blob);
     window.open(url);
