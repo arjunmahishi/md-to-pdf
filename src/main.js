@@ -34,7 +34,10 @@ const editor = new EditorView({
 });
 
 document.querySelector("#save-pdf").addEventListener("click", () => {
-  html2pdf().from(document.querySelector('#preview')).toPdf().get('pdf').then(pdf => {
+  let target = document.querySelector("#preview").cloneNode(true);
+  // target.classList.remove('w-1/2');
+
+  html2pdf().from(target).toPdf().get('pdf').then(pdf => {
     const blob = pdf.output('blob');
     const url = URL.createObjectURL(blob);
     window.open(url);
