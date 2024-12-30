@@ -12,7 +12,7 @@ marked.use({
   renderer: renderers,
 })
 
-const updateDebounceRate = 300; // milliseconds
+const updateDebounceRate = 1000; // milliseconds
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -22,25 +22,31 @@ const debounce = (fn, delay) => {
   };
 }
 
-const updatePreview = debounce(() => {
+const updatePreviewDiv = debounce((e) => {
+  console.log(e)
+
   const markdown = editor.state.doc.toString();
   const html = marked(markdown);
   document.querySelector("#preview").innerHTML = html;
+
+  renderPDF();
 }, updateDebounceRate);
 
 const editor = new EditorView({
+  parent: document.querySelector("#editor"),
   state: EditorState.create({
     doc: "test\n\n# test",
     extensions: [
       basicSetup,
       markdown(),
-      EditorView.updateListener.of(updatePreview),
+      EditorView.updateListener.of(updatePreviewDiv),
     ],
   }),
-  parent: document.querySelector("#editor")
 });
 
-document.querySelector("#save-pdf").addEventListener("click", () => {
+const getPDF = () => {
+  // const markdown = editor.state.doc.toString();
+  // const html = marked(markdown);
   const body = document.querySelector("body").cloneNode(true);
   const container = document.querySelector("#main-container").cloneNode(true);
   const preview = document.querySelector("#preview").cloneNode(true);
@@ -56,15 +62,35 @@ document.querySelector("#save-pdf").addEventListener("click", () => {
   // the preview needs to be full width or only the left half of the page will be occupied
   // in the pdf
   preview.classList.remove("w-1/2");
+  preview.hidden = false;
 
+  const opt = {
+    jsPDF: {
+      orientation: 'portrait',
+      format: document.querySelector('#page-layout').value,
+    },
+  }
 
-  html2pdf().from(body).toPdf().get('pdf').then(pdf => {
+  return html2pdf().set(opt).from(body);
+}
+
+const renderPDF = () => {
+  getPDF().toPdf().get('pdf').then(pdf => {
     const blob = pdf.output('blob');
     const url = URL.createObjectURL(blob);
-    window.open(url);
+
+    document.querySelector("#preview-iframe").src = `${url}#toolbar=0&navpanes=0&scrollbar=1`;
   });
-});
+}
+
+const downloadPDF = () => {
+  getPDF().save();
+}
 
 document.getElementById('font').addEventListener('change', (e) => {
   document.querySelector('#preview').style = `font-family: ${e.target.value}`;
+});
+
+document.querySelector('#save-pdf').addEventListener('click', (e) => {
+  downloadPDF();
 });

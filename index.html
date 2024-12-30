@@ -11,22 +11,65 @@
 
 <body class="min-h-screen flex flex-col">
   <div class="container mx-auto p-4 flex flex-col md:flex-row items-center gap-4 border-b">
-    <div class="flex-1 flex-row flex-grow">
-      <label for="font" class="mr-2">Font:</label>
-      <select id="font" class="p-2 border rounded">
-        <option value="Arial">Arial</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Courier New">Courier New</option>
-      </select>
+    <div class="flex flex-grow">
+
+      <div class="flex flex-col">
+        <label for="font" class="font-bold">Font Family</label>
+        <select id="font" class="p-2 border rounded">
+          <option value="Arial">Arial</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Courier New">Courier New</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col ml-4">
+        <label for="font-size" class="font-bold">Font Size</label>
+        <input id="font-size" class="p-2 border rounded w-16 appearance-none" type="number" value="16">
+      </div>
+
+      <div class="flex flex-col ml-4">
+        <label for="page-layout" class="font-bold">Page Layout</label>
+        <select id="page-layout" class="p-2 border rounded">
+          <option value="a1">A1</option>
+          <option value="a2">A2</option>
+          <option value="a3">A3</option>
+          <option value="a4" selected>A4</option>
+          <option value="a5">A5</option>
+          <option value="a6">A6</option>
+          <option value="a7">A7</option>
+          <option value="a8">A8</option>
+          <option value="a9">A9</option>
+          <option value="a10">A10</option>
+          <option value="b1">B1</option>
+          <option value="b2">B2</option>
+          <option value="b3">B3</option>
+          <option value="b4">B4</option>
+          <option value="b5">B5</option>
+          <option value="b6">B6</option>
+          <option value="b7">B7</option>
+          <option value="b8">B8</option>
+          <option value="b9">B9</option>
+          <option value="b10">B10</option>
+          <option value="letter">Letter</option>
+          <option value="legal">Legal</option>
+          <option value="ledger">Ledger</option>
+          <option value="tabloid">Tabloid</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col ml-4">
+        <label for="margin" class="font-bold">Margin</label>
+        <input id="margin" class="p-2 border rounded w-16 appearance-none" type="number" value="16">
+      </div>
 
       <button id="page-break" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4" hidden>
         Insert page break
       </button>
     </div>
 
-    <div class="flex flex-row-reverse flex-grow">
+    <div class="flex flex-row-reverse">
       <button id="save-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Save as PDF
+        Download PDF
       </button>
     </div>
   </div>
@@ -34,8 +77,10 @@
   <div id="main-container" class="container mx-auto p-4 flex flex-col md:flex-row grow">
     <div id="editor" class="w-1/2 overflow-auto border-r-4"></div>
 
+    <div hidden id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>
     <!--If the classes of this div chaange, make sure to change it in the PDF generating function too-->
-    <div id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>
+    <!-- <div id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div> -->
+    <iframe id="preview-iframe" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></iframe>
   </div>
 
 </body>
