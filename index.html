@@ -14,8 +14,8 @@
     <div class="flex flex-grow">
 
       <div class="flex flex-col">
-        <label for="font" class="font-bold">Font Family</label>
-        <select id="font" class="p-2 border rounded">
+        <label for="font-family" class="font-bold">Font Family</label>
+        <select id="font-family" class="p-2 border rounded">
           <option value="Arial">Arial</option>
           <option value="Georgia">Georgia</option>
           <option value="Courier New">Courier New</option>
@@ -24,12 +24,13 @@
 
       <div class="flex flex-col ml-4">
         <label for="font-size" class="font-bold">Font Size</label>
-        <input id="font-size" class="p-2 border rounded w-16 appearance-none" type="number" value="16">
+        <input id="font-size" class="p-2 border rounded w-16 appearance-none"
+            type="number" value="16">
       </div>
 
       <div class="flex flex-col ml-4">
-        <label for="page-layout" class="font-bold">Page Layout</label>
-        <select id="page-layout" class="p-2 border rounded">
+        <label for="page-size" class="font-bold">Page Size</label>
+        <select id="page-size" class="p-2 border rounded">
           <option value="a1">A1</option>
           <option value="a2">A2</option>
           <option value="a3">A3</option>
@@ -58,8 +59,9 @@
       </div>
 
       <div class="flex flex-col ml-4">
-        <label for="margin" class="font-bold">Margin</label>
-        <input id="margin" class="p-2 border rounded w-16 appearance-none" type="number" value="16">
+        <label for="margin" class="font-bold">Margin (mm)</label>
+        <input id="margin" class="p-2 border rounded w-16 appearance-none"
+            type="number" value="10">
       </div>
 
       <button id="page-break" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4" hidden>
@@ -74,14 +76,12 @@
     </div>
   </div>
 
-  <div id="main-container" class="container mx-auto p-4 flex flex-col md:flex-row grow">
-    <div id="editor" class="w-1/2 overflow-auto border-r-4"></div>
-
-    <div hidden id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>
-    <!--If the classes of this div chaange, make sure to change it in the PDF generating function too-->
-    <!-- <div id="preview" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div> -->
-    <iframe id="preview-iframe" class="w-1/2 overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></iframe>
+  <div id="main-container" class="flex flex-col md:flex-row flex-grow md:w-full">
+    <div id="editor" class="w-1/2 overflow-auto border-r-2"></div>
+    <iframe id="preview-iframe" class="w-1/2 overflow-auto prose prose-neutral max-w-none"></iframe>
   </div>
 
 </body>
+
+<div hidden id="preview" class="overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>
 </html>

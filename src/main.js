@@ -12,7 +12,9 @@ marked.use({
   renderer: renderers,
 })
 
-const updateDebounceRate = 1000; // milliseconds
+const editorUpdateDebounceRate = 1000; // milliseconds
+const styleUpdateDebounceRate = 300; // milliseconds
+const styleControlIDs = ['font-family', 'font-size', 'page-size', 'margin'];
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -22,15 +24,18 @@ const debounce = (fn, delay) => {
   };
 }
 
-const updatePreviewDiv = debounce((e) => {
-  console.log(e)
-
+let lastHTML = '';
+const editorUpdateHandler = debounce(() => {
   const markdown = editor.state.doc.toString();
   const html = marked(markdown);
-  document.querySelector("#preview").innerHTML = html;
+  if (lastHTML === html) {
+    return;
+  }
 
-  renderPDF();
-}, updateDebounceRate);
+  document.querySelector("#preview").innerHTML = html;
+  renderPDFPreview();
+  lastHTML = html;
+}, editorUpdateDebounceRate);
 
 const editor = new EditorView({
   parent: document.querySelector("#editor"),
@@ -39,14 +44,12 @@ const editor = new EditorView({
     extensions: [
       basicSetup,
       markdown(),
-      EditorView.updateListener.of(updatePreviewDiv),
+      EditorView.updateListener.of(editorUpdateHandler),
     ],
   }),
 });
 
 const getPDF = () => {
-  // const markdown = editor.state.doc.toString();
-  // const html = marked(markdown);
   const body = document.querySelector("body").cloneNode(true);
   const container = document.querySelector("#main-container").cloneNode(true);
   const preview = document.querySelector("#preview").cloneNode(true);
@@ -65,21 +68,24 @@ const getPDF = () => {
   preview.hidden = false;
 
   const opt = {
+    filename: 'markdown.pdf',
+    margin: [0, document.querySelector('#margin').value], // [vertical, horizontal] in mm
     jsPDF: {
       orientation: 'portrait',
-      format: document.querySelector('#page-layout').value,
+      format: document.querySelector('#page-size').value,
     },
   }
 
   return html2pdf().set(opt).from(body);
 }
 
-const renderPDF = () => {
+const renderPDFPreview = () => {
   getPDF().toPdf().get('pdf').then(pdf => {
-    const blob = pdf.output('blob');
+
+    const blob = pdf.setFontSize("200px").output('blob');
     const url = URL.createObjectURL(blob);
 
-    document.querySelector("#preview-iframe").src = `${url}#toolbar=0&navpanes=0&scrollbar=1`;
+    document.querySelector("#preview-iframe").src = `${url}#toolbar=1&navpanes=0&scrollbar=1`;
   });
 }
 
@@ -87,8 +93,38 @@ const downloadPDF = () => {
   getPDF().save();
 }
 
-document.getElementById('font').addEventListener('change', (e) => {
-  document.querySelector('#preview').style = `font-family: ${e.target.value}`;
+const styleUpdateHandler = debounce(() => {
+  const preview = document.querySelector("#preview");
+  const fontFamily = document.querySelector("#font-family").value;
+  const fontSize = document.querySelector("#font-size").value;
+
+  // TODO: find a way to add this directly via html2pdf / jsPDF
+  preview.style = `font-family: ${fontFamily}; font-size: ${fontSize}px;`;
+
+  renderPDFPreview();
+}, styleUpdateDebounceRate);
+
+// set up all the listeners below this
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/README.md');
+    const markdownContent = await response.text();
+
+    editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: markdownContent,
+      },
+    });
+  } catch (error) {
+    console.error('Error loading README.md:', error);
+  }
+});
+
+styleControlIDs.forEach((id) => {
+  document.getElementById(id).addEventListener('change', styleUpdateHandler);
 });
 
 document.querySelector('#save-pdf').addEventListener('click', (e) => {
