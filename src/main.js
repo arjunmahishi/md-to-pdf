@@ -4,17 +4,18 @@ import { markdown } from "@codemirror/lang-markdown";
 import { marked } from "marked";
 import { renderers } from "./marked-renderers";
 import html2pdf from 'html2pdf.js';
+
 import './style.css';
 
 marked.use({
   gfm: true,
-  breaks: true,
   renderer: renderers,
 })
 
 const editorUpdateDebounceRate = 1000; // milliseconds
 const styleUpdateDebounceRate = 300; // milliseconds
 const styleControlIDs = ['font-family', 'font-size', 'page-size', 'margin'];
+let editor = null;
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -36,18 +37,6 @@ const editorUpdateHandler = debounce(() => {
   renderPDFPreview();
   lastHTML = html;
 }, editorUpdateDebounceRate);
-
-const editor = new EditorView({
-  parent: document.querySelector("#editor"),
-  state: EditorState.create({
-    doc: "test\n\n# test",
-    extensions: [
-      basicSetup,
-      markdown(),
-      EditorView.updateListener.of(editorUpdateHandler),
-    ],
-  }),
-});
 
 const getPDF = () => {
   const body = document.querySelector("body").cloneNode(true);
@@ -111,12 +100,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/README.md');
     const markdownContent = await response.text();
 
-    editor.dispatch({
-      changes: {
-        from: 0,
-        to: editor.state.doc.length,
-        insert: markdownContent,
-      },
+    editor = new EditorView({
+      parent: document.querySelector("#editor"),
+      state: EditorState.create({
+        doc: markdownContent,
+        extensions: [
+          basicSetup,
+          markdown(),
+          EditorView.updateListener.of(editorUpdateHandler),
+        ],
+      }),
     });
   } catch (error) {
     console.error('Error loading README.md:', error);
@@ -127,6 +120,6 @@ styleControlIDs.forEach((id) => {
   document.getElementById(id).addEventListener('change', styleUpdateHandler);
 });
 
-document.querySelector('#save-pdf').addEventListener('click', (e) => {
+document.querySelector('#save-pdf').addEventListener('click', () => {
   downloadPDF();
 });

@@ -1,6 +1,6 @@
 # MD to PDF Converter
 
-This is a simple browser based tool to conver markdown to PDF. You can control how the PDF looks
+This is a simple browser based tool to convert markdown to PDF. You can control how the PDF looks
 by tweaking the available styling options. A simple tool like this should not be behind a paywall
 
 ## Available styling options
