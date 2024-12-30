@@ -10,7 +10,7 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
-  <div class="container mx-auto p-4 flex flex-col md:flex-row items-center gap-4 border-b">
+  <div class="container mx-auto p-4 flex flex-col md:flex-row items-center gap-4">
     <div class="flex flex-grow">
 
       <div class="flex flex-col">
@@ -73,18 +73,24 @@
       </button>
     </div>
 
-    <div class="flex flex-row-reverse">
-      <button id="save-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    <div class="flex flex-row-reverse items-center">
+      <button id="save-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 rounded ml-4">
         Download PDF
       </button>
+      <a href="https://github.com/arjunmahishi/md-to-pdf" target="_blank">
+        <img src="/images/github.svg" class="w-12 h-12" />
+      </a>
     </div>
   </div>
 
-  <div id="main-container" class="flex flex-col md:flex-row flex-grow md:w-full">
+  <div id="main-container" class="flex flex-col md:flex-row flex-grow md:w-full border-y">
     <div id="editor" class="w-1/2 overflow-auto border-r-2"></div>
     <iframe id="preview-iframe" class="w-1/2 overflow-auto prose prose-neutral max-w-none"></iframe>
   </div>
 
+  <footer class="flex my-1 justify-center">
+      <p class="text-sm text-gray-500">👾 Made by <a href="https://arjunmahishi.com" target="_blank" class="text-blue-500">arjunmahishi</a></p>
+  </footer>
 </body>
 
 <div hidden id="preview" class="overflow-auto ml-0 md:ml-4 prose prose-neutral max-w-none"></div>

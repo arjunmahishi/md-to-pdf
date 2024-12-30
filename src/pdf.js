@@ -32,13 +32,17 @@ const getPDF = () => {
   return html2pdf().set(opt).from(body);
 }
 
+let blobURL = null;
 export const renderPDFPreview = () => {
   getPDF().toPdf().get('pdf').then(pdf => {
+    if (blobURL) {
+      // release the memory used for the previous blob
+      URL.revokeObjectURL(blobURL);
+    }
 
-    const blob = pdf.setFontSize("200px").output('blob');
-    const url = URL.createObjectURL(blob);
-
-    document.querySelector("#preview-iframe").src = `${url}#toolbar=1&navpanes=0&scrollbar=1`;
+    const blob = pdf.output('blob');
+    blobURL = URL.createObjectURL(blob);
+    document.querySelector("#preview-iframe").src = `${blobURL}#toolbar=1&navpanes=0&scrollbar=1`;
   });
 }
 

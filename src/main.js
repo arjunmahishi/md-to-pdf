@@ -12,7 +12,6 @@ marked.use({
   renderer: renderers,
 })
 
-const base = '/md-to-pdf';
 const editorUpdateDebounceRate = 1000; // milliseconds
 const styleUpdateDebounceRate = 300; // milliseconds
 const styleControlIDs = ['font-family', 'font-size', 'page-size', 'margin'];
@@ -54,7 +53,7 @@ const styleUpdateHandler = debounce(() => {
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    const response = await fetch(`${base}/README.md`);
+    const response = await fetch(`${import.meta.env.BASE_URL}README.md`);
     const markdownContent = await response.text();
 
     editor = new EditorView({
